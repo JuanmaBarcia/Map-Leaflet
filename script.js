@@ -1,5 +1,23 @@
 console.log(`Map Leaflet`)
 
+const mapId = 'map';
+const initialCoordinates = [34.076275636500945, -118.24132489330957];
+const map = L.map(mapId).setView(initialCoordinates, 13);
+
+const MAPBOX_API = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}'
+
+const ATTRIBUTION = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
+const ACCESS_TOKEN = 'pk.eyJ1IjoiY2Nhc3RpbGxvMDZtYiIsImEiOiJja2k1eXpybXU3em1mMnRsNjNqajJ0YW12In0.aFQJlFDBDQeUpLHT4EiRYg';
+
+L.tileLayer(MAPBOX_API, {
+    attribution: ATTRIBUTION,
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: ACCESS_TOKEN
+}).addTo(map);
+
 let positionAntes = []
 let positionActual = []
 let cambios = []
@@ -31,7 +49,8 @@ let posiciones = () => {
                     }
                 })
             })
-        }).then(() => {
+        })
+        .then(() => {
             positionActual.forEach(vehiculo => vehiculo.addTo(map))
             if (positionAntes.length == positionActual.length) {
                 for (let i = 0; i < positionAntes.length; i++) {
@@ -44,23 +63,7 @@ let posiciones = () => {
         })
 }
 
-const mapId = 'map';
-const initialCoordinates = [34.076275636500945, -118.24132489330957];
-const map = L.map(mapId).setView(initialCoordinates, 13);
-
-const MAPBOX_API = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}'
-
-const ATTRIBUTION = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
-const ACCESS_TOKEN = 'pk.eyJ1IjoiY2Nhc3RpbGxvMDZtYiIsImEiOiJja2k1eXpybXU3em1mMnRsNjNqajJ0YW12In0.aFQJlFDBDQeUpLHT4EiRYg';
-
-L.tileLayer(MAPBOX_API, {
-    attribution: ATTRIBUTION,
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: ACCESS_TOKEN
-}).addTo(map);
+console.log(map._layers)
 
 posiciones()
 
@@ -68,7 +71,6 @@ setInterval(() => {
     positionAntes.forEach(vehiculo => map.removeLayer(vehiculo))
     cambios = []
     posiciones()
-
     positionAntes = positionActual
     positionActual = []
 }, 1500);
